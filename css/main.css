@@ -1,0 +1,50 @@
+
+
+/* ==========================================================================
+   Author's custom styles
+   ========================================================================== */
+
+body {
+	/* background-color: #e6ea47; */
+	background-color: #e6eae7;
+}
+
+
+#retrospective {
+	background-color: white;
+	padding: 20px 20px 20px 20px;
+	border: 1px solid #bbb;
+
+	-webkit-box-shadow: 0px 5px 10px -1px #777;
+	-moz-box-shadow: 0px 5px 10px -1px #777;
+	box-shadow: 0px 5px 10px -1px #777;
+	min-height: 390px;
+
+	border-radius: 6px 6px 6px 6px;
+
+}
+
+#timers, #userchecklists, #userlogin, #usersignup {
+	background-color: white;
+	padding: 20px 20px 20px 20px;
+	border: 1px solid #bbb;
+
+	-webkit-box-shadow: 0px 5px 10px -1px #777;
+	-moz-box-shadow: 0px 5px 10px -1px #777;
+	box-shadow: 0px 5px 10px -1px #777;
+	min-height: 390px;
+
+	/* border-radius: 4px 4px 0px 0px;*/
+
+}
+
+
+
+
+
+
+
+
+
+
+
