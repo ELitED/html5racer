@@ -4,13 +4,12 @@ var canvas   = document.getElementById('canvas'),
 	context  = canvas.getContext('2d'),
 	ctxW     = canvas.width,
 	ctxH     = canvas.height,
-	player   = new Car(),
-	player2	 = new Car();
-	player2.x -= 40;
-	player2.segment = 3;
+	player1  = new Car(),
+	player2	 = new Car(),
+//	player3  = new Car(),
 	track    = new Image(),
 	trackHit = new Image(),
-
+	
 	elPX     = document.getElementById('px'),
 	elPY     = document.getElementById('py'),
 	elPE     = document.getElementById('pe'),
@@ -49,43 +48,42 @@ function speedXY (rotation, speed) {
 	};
 }
 
-var x=10,y=10;
 function step (car) {
 	if (car.code === 'player'){
 
 		// constantly decrease speed
-		if (!car.isMoving()){
-			car.speed = 0;
-			// car.speed = 0.5;
-		} else {
-			car.speed *= car.speedDecay;
-		}
+		//if (!car.isMoving()){
+		//	car.speed = 0;
+		//	// car.speed = 0.5;
+		//} else {
+		//	car.speed *= car.speedDecay;
+		//}
 
 		// keys movements
-		if (keys[key.UP])  { car.accelerate(); }
-		if (keys[key.DOWN]){ car.decelerate(); }
-		if (keys[key.LEFT]){ car.steerLeft(); }
-		if (keys[key.RIGHT]){car.steerRight(); }
+		//if (keys[key.UP])  { car.accelerate(); }
+		//if (keys[key.DOWN]){ car.decelerate(); }
+		//if (keys[key.LEFT]){ car.steerLeft(); }
+		//if (keys[key.RIGHT]){car.steerRight(); }
 
-		var speedAxis = speedXY(car.rotation, car.speed);
-		car.x += speedAxis.x;
-		car.y += speedAxis.y;
+		//var speedAxis = speedXY(car.rotation, car.speed);
+		//car.x += speedAxis.x;
+		//car.y += speedAxis.y;
 
 		// collisions
-		if (car.collisions.left.isHit(hit)){
-			car.steerRight();
-			car.decelerate(1);
-		}
-		if (car.collisions.right.isHit(hit)){
-			car.steerLeft();
-			car.decelerate(1);
-		}
-		if (car.collisions.top.isHit(hit)){
-			car.decelerate(1);
-		}
-		if (car.collisions.bottom.isHit(hit)){
-			car.decelerate(1);
-		}
+		//if (car.collisions.left.isHit(hit)){
+		//	car.steerRight();
+		//	car.decelerate(1);
+		//}
+		//if (car.collisions.right.isHit(hit)){
+		//	car.steerLeft();
+		//	car.decelerate(1);
+		//}
+		//if (car.collisions.top.isHit(hit)){
+		//	car.decelerate(1);
+		//}
+		//if (car.collisions.bottom.isHit(hit)){
+		//	car.decelerate(1);
+		//}
 
 		// info
 		elPX.innerHTML = Math.floor(car.x);
@@ -114,13 +112,14 @@ function drawCurve() {
 	context.bezierCurveTo(124, 598, 123, 351, 306, 362);
 	context.stroke();
 }
-function stepT(t) {
-	elTC.innerHTML = Math.floor(t*10000)/10000;
-	t += speed;
-	return t;
+function stepT(car) {
+	elTC.innerHTML = Math.floor(car.time*10000)/10000;
+	car.time += car.speed;
 }
-function drawCurve2(t, p0, p1, p2, p3, car) {
-	// p0, p1, p2, p3 define points for bezier curve
+function drawCurve2(p0, p1, p2, p3, car) { 
+	// p0, p1, p2, p3 define points for bezier curve 
+	// curve starts at p3 and goes to p0
+	var t = car.time
 	var at = 1 - t;
 	var green1x = p0.x * t + p1.x * at;
 	var green1y = p0.y * t + p1.y * at;
@@ -134,22 +133,13 @@ function drawCurve2(t, p0, p1, p2, p3, car) {
 	var blue2y = green2y * t + green3y * at;
 	var finalx = blue1x * t + blue2x * at;
 	var finaly = blue1y * t + blue2y * at;
+	// color reference for above http://en.wikipedia.org/wiki/File:Bezier_3_big.gif
 
-	// context.clearRect(0, 0, canvas.width, canvas.height);
-	// context.beginPath();
-	// context.arc(finalx, finaly, 10, 0, 2 * Math.PI, false);
-	// context.fillStyle = 'red';
-	// context.fill();
-	// context.closePath();
-	car.x = 	finalx;
+	car.x = finalx;
 	car.y = finaly;
 	car.energyReserve -= 10;
-	if ( car.x < 270 ) {
-		car.rotation = car.rotation - (2.7333*at);
-		return;
-	}
-	if ( car.x > 700 ) {
-		car.rotation = car.rotation - (2.4333*at);
+	if ( car.x < 270 || car.x > 750) {
+		car.rotation = car.rotation - (3.2*at);
 		return;
 	}
 	if ( car.x > 270 && car.y > 550) {
@@ -181,137 +171,76 @@ function selfDrive(car) {
 	if ( car.segment == 5 ) car.segment = 1;
 	
 	if ( car.segment == 1 && car.energyReserve > 0) {
-		var p0 = {"x": 268, "y": 362};
-		var p1 = {"x": 268, "y": 362};
-		var p2 = {"x": 700, "y": 362};
-		var p3 = {"x": 700, "y": 362};
-		drawCurve2(t, p0, p1, p2, p3, car);
-		if (t >= 0.98) {
-			t = 0;
+		var p3 = {"x": 750, "y": 385-car.offset};
+		var p2 = {"x": 750, "y": 385-car.offset};
+		var p1 = {"x": 270, "y": 385-car.offset};
+		var p0 = {"x": 270, "y": 385-car.offset};
+		drawCurve2(p0, p1, p2, p3, car); 
+		if (car.time >= 0.98) {
+			car.time = 0;
 			car.segment = 2;
 		}
 	}
-	if ( car.segment == 2 && car.energyReserve > 0) {
-		var p0 = {"x": 268, "y": 592};
-		var p1 = {"x": 124, "y": 598};
-		var p2 = {"x": 123, "y": 351};
-		var p3 = {"x": 268, "y": 362};
-		drawCurve2(t, p0, p1, p2, p3, car);
-		if (t >= 0.98) {
-			t = 0;
+	else if ( car.segment == 2 && car.energyReserve > 0) {
+		var p3 = {"x": 270, "y": 385-car.offset};
+		var p2 = {"x": 140-2*car.offset, "y": 435-car.offset};
+		var p1 = {"x": 140-2*car.offset, "y": 515+car.offset};
+		var p0 = {"x": 270, "y": 565+car.offset};
+		drawCurve2(p0, p1, p2, p3, car);
+		if (car.time >= 0.98) {
+			car.time = 0;
 			car.segment = 3;
 		}
 	}
-	if ( car.segment == 3 && car.energyReserve > 0) {
-		var p0 = {"x": 700, "y": 598};
-		var p1 = {"x": 700, "y": 598};
-		var p2 = {"x": 268, "y": 598};
-		var p3 = {"x": 268, "y": 598};
-		drawCurve2(t, p0, p1, p2, p3, car);
-		if (t >= 0.9) {
-			t = 0;
+	else if ( car.segment == 3 && car.energyReserve > 0) {
+		var p3 = {"x": 270, "y": 565+car.offset};
+		var p2 = {"x": 270, "y": 565+car.offset};
+		var p1 = {"x": 750, "y": 565+car.offset};
+		var p0 = {"x": 750, "y": 565+car.offset};
+		drawCurve2(p0, p1, p2, p3, car);
+		if (car.time >= 0.98) {
+			car.time = 0;
 			car.segment = 4;
 		}
 	}
-	if ( car.segment == 4 && car.energyReserve > 0) {
-		var p3 = {"x": 309+400, "y": 592};
-		var p2 = {"x": 124+800, "y": 598};
-		var p1 = {"x": 123+800, "y": 351};
-		var p0 = {"x": 306+400, "y": 362};
-		drawCurve2(t, p0, p1, p2, p3, car);
-		if (t >= 0.9) {
-			t = 0;
-			car.segment = 5;
-		}
-	}
-	if ( car.segment == 5 && car.energyReserve > 0) {
-		var p0 = {"x": 268, "y": 362};
-		var p1 = {"x": 268, "y": 362};
-		var p2 = {"x": 700, "y": 362};
-		var p3 = {"x": 700, "y": 362};
-		drawCurve2(t, p0, p1, p2, p3, car);
-		if (t >= 0.98) {
-			t = 0;
-			car.segment = 2;
+	else if ( car.segment == 4 && car.energyReserve > 0) {
+		var p3 = {"x": 750, "y": 565+car.offset};
+		var p2 = {"x": 880+2*car.offset, "y": 515+car.offset};
+		var p1 = {"x": 880+2*car.offset, "y": 435-car.offset};
+		var p0 = {"x": 750, "y": 385-car.offset};
+		drawCurve2(p0, p1, p2, p3, car);
+		if (car.time >= 0.98) {
+			car.time = 0;
+			car.segment = 1;
 		}
 	}
 }
 
 function frame () {
-	step(player);
+	step(player1);
 	step(player2);
+//	step(player3);
 	drawTrack();
-	drawCar(player);
+	drawCar(player1);
 	drawCar(player2);
+//	drawCar(player3);
 	
-	// drawCurve();
-	t = stepT(t, speed);
-	selfDrive(player);
+	stepT(player1);
+	stepT(player2);
+//	stepT(player3);
+	selfDrive(player1);
 	selfDrive(player2);
-	
-	// if ( player.segment == 5 ) player.segment = 1;
-	
-	// if ( player.segment == 1 && player.energyReserve > 0) {
-	// 	var p0 = {"x": 268, "y": 362};
-	// 	var p1 = {"x": 268, "y": 362};
-	// 	var p2 = {"x": 700, "y": 362};
-	// 	var p3 = {"x": 700, "y": 362};
-	// 	drawCurve2(t, p0, p1, p2, p3, player);
-	// 	if (t >= 0.98) {
-	// 		t = 0;
-	// 		player.segment = 2;
-	// 	}
-	// }
-	// if ( player.segment == 2 && player.energyReserve > 0) {
-	// 	var p0 = {"x": 268, "y": 592};
-	// 	var p1 = {"x": 124, "y": 598};
-	// 	var p2 = {"x": 123, "y": 351};
-	// 	var p3 = {"x": 268, "y": 362};
-	// 	drawCurve2(t, p0, p1, p2, p3, player);
-	// 	if (t >= 0.98) {
-	// 		t = 0;
-	// 		player.segment = 3;
-	// 	}
-	// }
-	// if ( player.segment == 3 && player.energyReserve > 0) {
-	// 	var p0 = {"x": 700, "y": 598};
-	// 	var p1 = {"x": 700, "y": 598};
-	// 	var p2 = {"x": 268, "y": 598};
-	// 	var p3 = {"x": 268, "y": 598};
-	// 	drawCurve2(t, p0, p1, p2, p3, player);
-	// 	if (t >= 0.9) {
-	// 		t = 0;
-	// 		player.segment = 4;
-	// 	}
-	// }
-	// if ( player.segment == 4 && player.energyReserve > 0) {
-	// 	var p3 = {"x": 309+400, "y": 592};
-	// 	var p2 = {"x": 124+800, "y": 598};
-	// 	var p1 = {"x": 123+800, "y": 351};
-	// 	var p0 = {"x": 306+400, "y": 362};
-	// 	drawCurve2(t, p0, p1, p2, p3, player);
-	// 	if (t >= 0.9) {
-	// 		t = 0;
-	// 		player.segment = 5;
-	// 	}
-	// }
-	// if ( player.segment == 5 && player.energyReserve > 0) {
-	// 	var p0 = {"x": 268, "y": 362};
-	// 	var p1 = {"x": 268, "y": 362};
-	// 	var p2 = {"x": 700, "y": 362};
-	// 	var p3 = {"x": 700, "y": 362};
-	// 	drawCurve2(t, p0, p1, p2, p3, player);
-	// 	if (t >= 0.98) {
-	// 		t = 0;
-	// 		player.segment = 2;
-	// 	}
-	// }
+//	selfDrive(player3);
 	
 	window.requestAnimationFrame(frame);
 
 }
-t = 0;
-speed = 0.009;
+//t = 0;
+//clockSpeed = 0.009;
+//player2.y -= 40;
+//player2.segment = 3;
+player1.offset=0; //lane 1
+player2.offset=20;//lane 2
+//player3.offset=40;//lane 3
+//player2.speed=.005;
 frame();
-
-
