@@ -15,22 +15,24 @@ function Car () {
 	};
 }
 Car.prototype = {
-	x: 670,
-	y: 370,
+	x: 730,
+	y: 385,
 	code: 'player',
 	acceleration: 1.1,
 	rotationStep: 4,
 	rotation: 270,
-	speed: 0,
+	speed: .009,
 	speedDecay: 0.98,
 	maxSpeed: 4,
 	backSpeed: 1.1,
 	energyReserve: 7000,
 	segment: 1,
+	time: 0,
+	offset: 0, //offset allows the cars to be in different lanes
 
 
 	isMoving: function (speed) {
-		this.getSegment();
+		//this.getSegment();
 
 		if (this.speed > 2) {
 			this.energyReserve = this.energyReserve - 10;
