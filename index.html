@@ -5,17 +5,22 @@
 		<link href="racer.css" rel="stylesheet">
 		<style type="text/css">
 			body {
-				background: #000;
+				background-color: #000;
 			}
 			canvas {
 				display: block;
+				z-index:-10;
 				border: solid 5px #444;
 				margin: 0 auto;
+				-webkit-border-radius: 12px;
+				-moz-border-radius: 12px;
+				border-radius: 12px;
 			}
 			#info {
 				/*display: none;*/
 				color:#aaa;
 			}
+
 		</style>
 	</head>
 	<body>
@@ -46,9 +51,19 @@
 			time: <span id="time2"></span><br>
 			mass: <span>1 kg</span>
 		</div>
+		
+		<div id="infoCar1Logo">
+			<img src="wildcats.png"/>
+		</div>
+
 		<div id="versus">
 			<h1>vs</h1>
 		</div>
+
+		<div id="infoCar2Logo">
+			<img src="vikings.png"/>
+		</div>
+
 		<div id="instructions">
 			<span>Press Space to Start/Pause</span>
 		</div>
