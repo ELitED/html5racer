@@ -77,8 +77,6 @@ function step (car1,car2) {
 function drawTrack (car1,car2) {
 	context.clearRect(0,0,ctxW,ctxH);
 	context.drawImage(track, 0, 0);
-	context.drawImage(car1.logo, 360, 425, 100, 100);
-	context.drawImage(car2.logo, 560, 425, 100, 100);
 }
 function drawCar (car) {
 	drawRotatedImage(car.img, car.x, car.y, car.rotation);
@@ -241,12 +239,13 @@ function frame () {
 //initalize player 1
 player1.offset=0; //lane 1
 player1.img.src='car1.png'; 
-player1.speed=.009; 
+player1.speed=.009;
 
 //initialize player 2
 player2.offset=20;//lane 2
 player2.img.src='car2.png';
 player2.speed=.005;
+player2.energyReserve = 6250; 
 
 //player3.offset=40;//lane 3
 
@@ -260,6 +259,8 @@ window.requestAnimationFrame(function () {
 	stepT(player2);
 	selfDrive(player2);
 	drawCar(player2);
+	step(player1, player2);
+		
 });
 
 frame();
