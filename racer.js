@@ -152,6 +152,7 @@ $(window).keydown(function(e){
 		if (e.keyCode==key.SPACE) keyPause=true; 
 	}
 });
+
 $(window).keyup(function(e){
 	if (keys[e.keyCode] !== 'undefined'){
 		keys[e.keyCode] = false;
@@ -241,11 +242,24 @@ function frame () {
 player1.offset=0; //lane 1
 player1.img.src='car1.png'; 
 player1.speed=.009; 
-player1.logo.src='wildcats.png';
+
 //initialize player 2
 player2.offset=20;//lane 2
 player2.img.src='car2.png';
 player2.speed=.005;
-player2.logo.src='vikings.png';
+
 //player3.offset=40;//lane 3
+
+// Draw initial frame
+window.requestAnimationFrame(function () {
+	drawTrack(player1, player2);
+	stepT(player1);
+	selfDrive(player1);
+	drawCar(player1);
+
+	stepT(player2);
+	selfDrive(player2);
+	drawCar(player2);
+});
+
 frame();
